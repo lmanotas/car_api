@@ -1,8 +1,9 @@
 ENV["RACK_ENV"] = "test"
 
 require 'rspec'
-require 'sequel'
 require 'rack/test'
+require 'sequel'
+require './app'
 
 RSpec.configure do |config|
   config.include Rack::Test::Methods

@@ -7,6 +7,6 @@ ENV["RACK_ENV"] = "development"
 
 class CarApi < Sinatra::Base
   get '/' do
-    'it works!'
+    'It Works!'
   end
 end

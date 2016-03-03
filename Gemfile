@@ -9,5 +9,6 @@ gem 'tilt-jbuilder', require: "sinatra/jbuilder"
 
 group :development, :test do
   gem 'rake'
+  gem 'rack-test'
   gem 'rspec'
 end
