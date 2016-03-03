@@ -1,9 +1,12 @@
 require 'spec_helper'
 
 describe CarApi do
-  it do
-    get '/'
-    expect(last_response).to be_ok
-    expect(last_response.body).to eq('It Works!')
+  context 'errors responses' do
+    subject(:json_response){ JSON.parse(last_response.body) }
+
+    before { get '/someunexistingroute' }
+
+    it { expect(last_response).not_to be_ok }
+    it { expect(json_response['error']['code']).to eq(404) }
   end
 end

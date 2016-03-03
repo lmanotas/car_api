@@ -3,6 +3,7 @@ ENV["RACK_ENV"] = "test"
 require 'rspec'
 require 'rack/test'
 require 'sequel'
+require 'byebug'
 require './app'
 
 RSpec.configure do |config|
