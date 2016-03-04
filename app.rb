@@ -5,30 +5,29 @@ require "json"
 ENV["RACK_ENV"] = "development"
 
 require './db/setup'
+require './car_query'
 
 class CarApi < Sinatra::Base
 
   get '/cars' do
-    # TODO: refactor this and extract in in a lib/ or Location model.
-    lat, lon = lon_lat_query
-    
-    query = "ST_DWithin(geog, ST_SetSRID(ST_MakePoint(#{lon}, #{lat}), #{SRID})::geography, #{QUERY_RADIUS})"
-    @cars = DB[:locations].where(query).to_a
-    jbuilder :cars
+    begin 
+      @cars = CarQuery.new(params[:location]).cars_near
+      jbuilder :cars
+    rescue CarQuery::BadRequestError => e
+      render_error(code: 400, msg: e.message)
+    rescue Sequel::DatabaseError => e
+      render_error(code: 500, msg: "Internal Error")
+    end
   end
   
   not_found do
-    render_error(404, 'Not Found.')
+    render_error(code: 404, msg: 'Not Found.')
   end
 
   private
-  def render_error(error_code, msg)
-    @error_code = 404
-    @msg = msg
+  def render_error(options = {})
+    @error_code = options[:code]
+    @msg = options[:msg]
     jbuilder :error
-  end
-
-  def lon_lat_query
-    params[:location].split(',')
   end
 end

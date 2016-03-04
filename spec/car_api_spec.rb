@@ -10,7 +10,6 @@ describe CarApi do
 
     before { get "/cars?location=51.5444204,-0.22707" }
 
-    it { expect(last_response).to be_ok }
     it { expect(cars_length).to be > 0 }
     it { expect(car['description']).not_to be_nil }
     it { expect(car['latitude']).not_to be_nil }
@@ -19,9 +18,16 @@ describe CarApi do
 
   context 'errors responses' do
     subject(:error_code){ json_response['error']['code'] }
-    before { get '/someunexistingroute' }
+    context 'not found error' do
+      before { get '/someunexistingroute' }
 
-    it { expect(last_response).not_to be_ok }
-    it { expect(error_code).to eq(404) }
+      it { expect(error_code).to eq(404) }
+    end
+
+    context 'Bad Request' do
+      before { get '/cars?location=' }
+
+      it { expect(error_code).to eq(400) }
+    end
   end
 end
