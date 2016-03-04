@@ -10,10 +10,10 @@ class CarApi < Sinatra::Base
 
   get '/cars' do
     # TODO: refactor this and extract in in a lib/ or Location model.
-    lon, lat = lon_lat_query
+    lat, lon = lon_lat_query
     
-    query = "ST_DWithin(geom, ST_SetSRID(ST_Point(#{lon}, #{lat}), #{SRID}), 30000)"
-    @cars = DB[:locations].where(query).limit(10).to_a
+    query = "ST_DWithin(geog, ST_SetSRID(ST_MakePoint(#{lon}, #{lat}), #{SRID})::geography, #{QUERY_RADIUS})"
+    @cars = DB[:locations].where(query).to_a
     jbuilder :cars
   end
   

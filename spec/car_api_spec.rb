@@ -11,7 +11,7 @@ describe CarApi do
     before { get "/cars?location=51.5444204,-0.22707" }
 
     it { expect(last_response).to be_ok }
-    it { expect(cars_length).to eq(10) }
+    it { expect(cars_length).to be > 0 }
     it { expect(car['description']).not_to be_nil }
     it { expect(car['latitude']).not_to be_nil }
     it { expect(car['longitude']).not_to be_nil }

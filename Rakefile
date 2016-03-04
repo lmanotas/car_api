@@ -30,10 +30,10 @@ namespace :db do
       String    :hasVans
       Float     :longitude
       String    :zipfleetId
-      column    :geom, :geometry
+      column    :geog, :geography
     end
     # Setting up index
-    DB.run('CREATE INDEX geom_index ON locations USING GIST ( geom )')
+    DB.run('CREATE INDEX geog_index ON locations USING GIST ( geog )')
   end
 
   task :seed do
@@ -43,8 +43,8 @@ namespace :db do
     locations = DB[:locations]
     # populate the table
     data.each { |location| locations.insert(location) }
-    # Populate geom field
-    DB.run("UPDATE locations SET geom = ST_PointFromText ('POINT(' || longitude || ' ' || latitude || ')' , 4326 )")
+    # Populate geog field
+    DB.run("UPDATE locations SET geog = ST_SetSRID(ST_MakePoint(longitude, latitude),#{SRID})::geography")
   end
 
   task reset: [:drop, :create, :schema_load, :seed] 
