@@ -19,6 +19,12 @@ class CarQuery
   private
   def lon_lat_for_query
     raise BadRequestError.new(), 'Bad Parameters' if location.nil? || location == ''
-    @lat, @lon = location.split(',')
+    @lat, @lon = separate_lon_lat
+  end
+
+  def separate_lon_lat
+    lat_lon_array = location.split(',')
+    raise BadRequestError.new(), 'Bad Parameters Format' if lat_lon_array.size < 2
+    lat_lon_array
   end
 end

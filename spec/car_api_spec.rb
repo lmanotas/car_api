@@ -24,10 +24,20 @@ describe CarApi do
       it { expect(error_code).to eq(404) }
     end
 
-    context 'Bad Request' do
-      before { get '/cars?location=' }
+    context 'Bad Request formats' do
+      before { get "/cars?location=#{location}" }
 
-      it { expect(error_code).to eq(400) }
+      context 'No content on locations' do
+        let(:location){ '' }
+
+        it { expect(error_code).to eq(400) }
+      end
+
+      context 'Wrong location format (lat,lon)' do
+        let(:location){ '51.4423,' }
+        
+        it { expect(error_code).to eq(400) }
+      end
     end
   end
 end
