@@ -8,7 +8,7 @@ require './db/setup'
 
 class CarApi < Sinatra::Base
 
-  post '/cars' do
+  get '/cars' do
     # TODO: refactor this and extract in in a lib/ or Location model.
     lon, lat = lon_lat_query
     

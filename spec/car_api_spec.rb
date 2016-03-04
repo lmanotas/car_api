@@ -8,7 +8,7 @@ describe CarApi do
     subject(:car){ cars.first }
     subject(:cars_length){ cars.length }
 
-    before { post "/cars?location=51.5444204,-0.22707" }
+    before { get "/cars?location=51.5444204,-0.22707" }
 
     it { expect(last_response).to be_ok }
     it { expect(cars_length).to eq(10) }
