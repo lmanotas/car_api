@@ -9,6 +9,8 @@ namespace :db do
   task :create do
     require 'pg'
     PG.connect(dbname: 'postgres').exec("CREATE DATABASE #{DB_NAME}")
+    # Adding Postgis extension
+    DB.run('CREATE EXTENSION postgis')
   end
 
   task :drop do
@@ -28,7 +30,10 @@ namespace :db do
       String    :hasVans
       Float     :longitude
       String    :zipfleetId
+      column    :geom, :geometry
     end
+    # Setting up index
+    DB.run('CREATE INDEX geom_index ON locations USING GIST ( geom )')
   end
 
   task :seed do
@@ -38,5 +43,9 @@ namespace :db do
     locations = DB[:locations]
     # populate the table
     data.each { |location| locations.insert(location) }
+    # Populate geom field
+    DB.run("UPDATE locations SET geom = ST_PointFromText ('POINT(' || longitude || ' ' || latitude || ')' , 4326 )")
   end
+
+  task reset: [:drop, :create, :schema_load, :seed] 
 end
